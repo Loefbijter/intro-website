@@ -1,0 +1,141 @@
+[
+  {
+    "model": "activities.activity",
+    "pk": 1,
+    "fields": {
+      "title": "Openingsborrel",
+      "slug": "openingsborrel",
+      "date": "2026-08-24",
+      "time_text": "20:00",
+      "theme": "",
+      "location_text": "Het Bastion",
+      "description": "De aftrap van de intro! Kom kennismaken met het bestuur, de commissies en je mede-eerstejaars onder het genot van een drankje.",
+      "cost_note": "",
+      "requires_registration": false,
+      "external_registration_url": "",
+      "capacity": null,
+      "registration_opens_at": null,
+      "registration_closes_at": null,
+      "collect_phone": true,
+      "collect_study": true,
+      "collect_dietary": false,
+      "custom_fields": [],
+      "is_published": true,
+      "sort_order": 1
+    }
+  },
+  {
+    "model": "activities.activity",
+    "pk": 2,
+    "fields": {
+      "title": "Zeilclinic",
+      "slug": "zeilclinic",
+      "date": "2026-08-25",
+      "time_text": "12:00–18:00, BBQ 18:00",
+      "theme": "Piraten & Zeemeerminnen",
+      "location_text": "Het Bastion",
+      "description": "Leer de basis van het zeilen tijdens onze clinic op het water, gevolgd door een gezellige BBQ. Verkleden als piraat of zeemeermin wordt gewaardeerd!",
+      "cost_note": "€7,50 (contant of tikkie ter plekke)",
+      "requires_registration": true,
+      "external_registration_url": "",
+      "capacity": 30,
+      "registration_opens_at": "2026-08-01T00:00:00+02:00",
+      "registration_closes_at": "2026-08-23T23:59:00+02:00",
+      "collect_phone": true,
+      "collect_study": true,
+      "collect_dietary": true,
+      "custom_fields": [
+        {
+          "key": "tshirt_maat",
+          "label": "T-shirt maat",
+          "type": "select",
+          "required": false,
+          "options": ["S", "M", "L", "XL"]
+        },
+        {
+          "key": "zeilervaring",
+          "label": "Zeilervaring",
+          "type": "text",
+          "required": false
+        }
+      ],
+      "is_published": true,
+      "sort_order": 2
+    }
+  },
+  {
+    "model": "activities.activity",
+    "pk": 3,
+    "fields": {
+      "title": "Kroegentocht",
+      "slug": "kroegentocht",
+      "date": "2026-08-26",
+      "time_text": "21:00",
+      "theme": "",
+      "location_text": "Binnenstad Nijmegen",
+      "description": "Een tocht langs de gezelligste kroegen van Nijmegen, samen met je introgroep.",
+      "cost_note": "Drankjes voor eigen rekening",
+      "requires_registration": true,
+      "external_registration_url": "",
+      "capacity": 60,
+      "registration_opens_at": "2026-08-01T00:00:00+02:00",
+      "registration_closes_at": "2026-08-25T23:59:00+02:00",
+      "collect_phone": true,
+      "collect_study": false,
+      "collect_dietary": false,
+      "custom_fields": [],
+      "is_published": true,
+      "sort_order": 3
+    }
+  },
+  {
+    "model": "activities.activity",
+    "pk": 4,
+    "fields": {
+      "title": "Eindfeest",
+      "slug": "eindfeest",
+      "date": "2026-08-28",
+      "time_text": "22:00",
+      "theme": "",
+      "location_text": "Villa van Schaeck",
+      "description": "Het feestelijke afsluitfeest van de introweek. Georganiseerd via een externe ticketpartner.",
+      "cost_note": "€5,00 via ticketlink",
+      "requires_registration": true,
+      "external_registration_url": "https://forms.gle/example-eindfeest",
+      "capacity": null,
+      "registration_opens_at": null,
+      "registration_closes_at": null,
+      "collect_phone": true,
+      "collect_study": true,
+      "collect_dietary": false,
+      "custom_fields": [],
+      "is_published": true,
+      "sort_order": 4
+    }
+  },
+  {
+    "model": "activities.activity",
+    "pk": 5,
+    "fields": {
+      "title": "Voorbereidingsborrel (concept, nog niet live)",
+      "slug": "voorbereidingsborrel",
+      "date": "2026-08-20",
+      "time_text": "19:00",
+      "theme": "",
+      "location_text": "Het Bastion",
+      "description": "Nog te bevestigen — wordt gebruikt om te testen dat ongepubliceerde activiteiten niet in de publieke API verschijnen.",
+      "cost_note": "",
+      "requires_registration": true,
+      "external_registration_url": "",
+      "capacity": 10,
+      "registration_opens_at": null,
+      "registration_closes_at": null,
+      "collect_phone": true,
+      "collect_study": true,
+      "collect_dietary": true,
+      "custom_fields": [],
+      "is_published": false,
+      "sort_order": 5
+    }
+  }
+]
