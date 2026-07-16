@@ -1,4 +1,4 @@
-.PHONY: dev build up down test seed superuser backup migrate logs
+.PHONY: dev build up down test seed superuser backup migrate logs purge
 
 dev:
 	docker compose up
@@ -27,6 +27,9 @@ superuser:
 
 backup:
 	docker compose exec backend sqlite3 /data/db.sqlite3 ".backup /data/backup-$$(date +%F).sqlite3"
+
+purge:
+	docker compose exec backend python manage.py purge_old_registrations
 
 logs:
 	docker compose logs -f
