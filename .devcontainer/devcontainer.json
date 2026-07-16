@@ -1,0 +1,50 @@
+{
+    "name": "intro-loefbijter",
+    "image": "mcr.microsoft.com/devcontainers/base:ubuntu-24.04",
+    "remoteUser": "vscode",
+
+    "features": {
+        // Isolated Docker daemon INSIDE the devcontainer, so the project's
+        // docker-compose bind mounts (./backend, ./frontend hot reload)
+        // resolve against this container's filesystem, not the host's.
+        "ghcr.io/devcontainers/features/docker-in-docker:2": {},
+
+        // Local toolchains for IDE language servers + running tests/lint
+        // outside the compose containers when convenient.
+        "ghcr.io/devcontainers/features/node:1": { "version": "20" },
+        "ghcr.io/devcontainers/features/python:1": { "version": "3.12" },
+
+        // Claude Code
+        "ghcr.io/anthropics/devcontainer-features/claude-code:1": {}
+    },
+
+    "mounts": [
+        "source=${localEnv:HOME}/.claude,target=/home/vscode/.claude,type=bind,consistency=cached",
+        "source=${localEnv:HOME}/.ssh,target=/home/vscode/.ssh,type=bind,consistency=cached,readonly"
+    ],
+
+    // Astro dev server, Django dev server/admin, prod-shaped nginx smoke test
+    "forwardPorts": [4321, 8000, 8080],
+    "portsAttributes": {
+        "4321": { "label": "Astro (dev, hot reload)" },
+        "8000": { "label": "Django (dev, /admin)" },
+        "8080": { "label": "nginx (prod-shaped stack)" }
+    },
+
+    // Install deps locally so Pylance/Astro tooling and quick `pytest` runs work
+    // without entering the compose containers. The compose stack remains the
+    // source of truth for actually running the app (`make dev`).
+    "postCreateCommand": "pip install -r backend/requirements.txt && npm --prefix frontend ci || true",
+
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-python.python",
+                "ms-python.vscode-pylance",
+                "astro-build.astro-vscode",
+                "ms-azuretools.vscode-docker",
+                "EditorConfig.EditorConfig"
+            ]
+        }
+    }
+}

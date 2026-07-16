@@ -1,0 +1,17 @@
+.env
+
+# Python
+__pycache__/
+*.pyc
+backend/db.sqlite3
+backend/staticfiles/
+backend/media/
+backend/.pytest_cache/
+
+# Node
+node_modules/
+frontend/dist/
+frontend/.astro/
+
+# OS
+.DS_Store
