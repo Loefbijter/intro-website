@@ -1,0 +1,183 @@
+---
+const CONTACT_EMAIL = "intro@loefbijter.nl";
+---
+
+<dialog id="register-modal" class="register-modal">
+  <form id="register-form" novalidate>
+    <button type="button" class="register-modal__close" aria-label="Sluiten" data-close>
+      &times;
+    </button>
+
+    <div id="register-modal-form-view">
+      <h3 id="register-modal-title"></h3>
+
+      <p class="register-modal__error" id="register-modal-error" role="alert" hidden></p>
+
+      <label>
+        Naam*
+        <input type="text" name="name" required maxlength="140" autocomplete="name" />
+        <span class="field-error" data-error-for="name"></span>
+      </label>
+
+      <label>
+        E-mailadres*
+        <input type="email" name="email" required autocomplete="email" />
+        <span class="field-error" data-error-for="email"></span>
+      </label>
+
+      <label class="field-phone" hidden>
+        Telefoonnummer
+        <input type="tel" name="phone" maxlength="40" autocomplete="tel" />
+        <span class="field-error" data-error-for="phone"></span>
+      </label>
+
+      <label class="field-study" hidden>
+        Studie
+        <input type="text" name="study" maxlength="140" />
+        <span class="field-error" data-error-for="study"></span>
+      </label>
+
+      <label class="field-dietary" hidden>
+        Dieetwensen
+        <small>Voor de catering — alleen als relevant.</small>
+        <input type="text" name="dietary" maxlength="255" />
+        <span class="field-error" data-error-for="dietary"></span>
+      </label>
+
+      <div id="custom-fields-container"></div>
+
+      <label class="consent-field">
+        <input type="checkbox" name="consent" required />
+        Ik ga akkoord met de
+        <a href="https://loefbijter.nl/privacyverklaring/" target="_blank" rel="noopener noreferrer"
+          >privacyverklaring</a
+        >*
+        <span class="field-error" data-error-for="consent"></span>
+      </label>
+
+      <div class="honeypot" aria-hidden="true">
+        <label>
+          Website
+          <input type="text" name="website" tabindex="-1" autocomplete="off" />
+        </label>
+      </div>
+
+      <div class="register-modal__actions">
+        <button type="submit" class="button" id="register-submit">Inschrijven</button>
+      </div>
+    </div>
+
+    <div id="register-modal-success-view" hidden>
+      <h3 id="register-modal-success-title"></h3>
+      <p id="register-modal-success-message"></p>
+      <p class="register-modal__contact">
+        Afmelden of iets wijzigen? Mail het bestuur via
+        <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>.
+      </p>
+      <button type="button" class="button" data-close>Sluiten</button>
+    </div>
+  </form>
+</dialog>
+
+<style is:global>
+  .register-modal {
+    border: none;
+    border-radius: var(--radius-md);
+    padding: var(--space-3);
+    width: min(32rem, 92vw);
+    max-height: 88vh;
+    overflow-y: auto;
+  }
+
+  .register-modal::backdrop {
+    background: rgba(35, 65, 147, 0.5);
+  }
+
+  .register-modal__close {
+    position: absolute;
+    top: var(--space-1);
+    right: var(--space-1);
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    line-height: 1;
+    cursor: pointer;
+    color: var(--color-text-muted);
+  }
+
+  #register-form label {
+    display: block;
+    margin-bottom: var(--space-2);
+    font-weight: 500;
+  }
+
+  #register-form input[type="text"],
+  #register-form input[type="email"],
+  #register-form input[type="tel"],
+  #register-form input[type="number"],
+  #register-form select,
+  #register-form textarea {
+    display: block;
+    width: 100%;
+    margin-top: 0.3rem;
+    padding: 0.6rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-body);
+    font-size: 1rem;
+  }
+
+  #register-form small {
+    display: block;
+    font-weight: 400;
+    color: var(--color-text-muted);
+  }
+
+  .consent-field {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    font-weight: 400;
+  }
+
+  .consent-field input {
+    margin-top: 0.2rem;
+  }
+
+  .field-error {
+    display: block;
+    color: var(--color-danger);
+    font-size: 0.85rem;
+    font-weight: 400;
+  }
+
+  .register-modal__error {
+    background: #fdecea;
+    color: var(--color-danger);
+    padding: 0.75rem;
+    border-radius: var(--radius-sm);
+    margin-bottom: var(--space-2);
+  }
+
+  .honeypot {
+    position: absolute;
+    left: -9999px;
+    top: auto;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  .register-modal__actions {
+    margin-top: var(--space-2);
+  }
+
+  .register-modal__actions .button {
+    width: 100%;
+  }
+
+  #register-modal-success-view .button {
+    width: 100%;
+    margin-top: var(--space-2);
+  }
+</style>

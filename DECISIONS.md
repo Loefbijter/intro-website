@@ -140,3 +140,31 @@ enough to need confirmation are called out explicitly.
   until it's explicitly renewed. Hit this firsthand adding `@fontsource/*`.
   Worth remembering for milestones 5–7 too whenever `requirements.txt` or
   `package.json` changes.
+
+## Milestone 5
+
+- **Activities island is vanilla TypeScript, no UI framework** (no React/
+  Vue/Svelte/Preact added to `package.json`). SPEC §2/§8 emphasize "Fast"
+  and a lightweight static site; the island's job is fetch → render cards →
+  open a form in a `<dialog>` → POST — plain DOM APIs handle that without a
+  framework runtime. The built client JS for the whole island (list +
+  modal + custom-field rendering) is 7.75 kB (2.74 kB gzipped, verified via
+  `npm run build`), which a framework runtime would multiply several times
+  over for equivalent behaviour.
+- **Registration modal uses the native `<dialog>` element**, not a custom
+  overlay built from styled `<div>`s. Gets focus-trapping, `Esc`-to-close,
+  and a `::backdrop` for free from the browser, which matters more than
+  usual here since the audience is "mostly on phones" (SPEC §8).
+- **Card descriptions render as plain escaped text, not parsed Markdown**,
+  even though `Activity.description` is documented as "markdown allowed"
+  (SPEC §4). Rendering board-authored Markdown as HTML client-side either
+  needs a parser dependency (weight, another thing to keep patched) or an
+  XSS-sanitization step to do safely; skipped both for now since no fixture
+  or real content currently relies on Markdown formatting. Revisit if the
+  board actually starts writing Markdown in descriptions — flagged here
+  rather than silently ignoring the SPEC's "markdown allowed" note.
+- **`typescript` pinned to `6.0.3`, not npm's literal "latest" (7.0.2).**
+  Same shape of conflict as the Astro/Node pin in milestone 1: `@astrojs/check@0.9.9`
+  (needed for `npm run check` / `astro check`) declares a peer range of
+  `^5.0.0 || ^6.0.0`, so TypeScript 7.x fails `npm install` outright. Used
+  the newest version inside that peer range instead.

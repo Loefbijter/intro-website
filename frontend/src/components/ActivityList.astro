@@ -1,7 +1,5 @@
 ---
-// Placeholder for the static shell (milestone 4). The real client-side
-// island that fetches /api/activities/ and renders cards + the
-// registration modal is built in milestone 5.
+import RegisterModal from "./RegisterModal.astro";
 ---
 
 <section id="programma" class="programma container">
@@ -11,12 +9,106 @@
   </div>
 </section>
 
-<style>
+<RegisterModal />
+
+<script>
+  import { initActivitiesIsland } from "../lib/activities-island";
+  initActivitiesIsland();
+</script>
+
+<style is:global>
   .programma {
     padding-block: var(--space-4);
   }
 
-  .programma__loading {
+  .programma__loading,
+  .programma__error,
+  .programma__empty {
     color: var(--color-text-muted);
+  }
+
+  .programma__list {
+    display: grid;
+    gap: var(--space-3);
+    grid-template-columns: 1fr;
+  }
+
+  @media (min-width: 640px) {
+    .programma__list {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 1000px) {
+    .programma__list {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .activity-card {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    background: var(--color-background);
+  }
+
+  .activity-card__image {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+  }
+
+  .activity-card__body {
+    padding: var(--space-2);
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .activity-card__body h3 {
+    margin: 0;
+  }
+
+  .activity-card__date {
+    color: var(--color-primary);
+    font-weight: 500;
+    margin: 0;
+  }
+
+  .activity-card__theme,
+  .activity-card__time,
+  .activity-card__location,
+  .activity-card__cost {
+    margin: 0;
+    color: var(--color-text-secondary);
+    font-size: 0.9rem;
+  }
+
+  .activity-card__description {
+    margin: 0.3rem 0 0;
+    font-size: 0.95rem;
+  }
+
+  .activity-card__registration {
+    margin-top: var(--space-1);
+  }
+
+  .activity-card__status {
+    margin: 0 0 0.5rem;
+    font-weight: 500;
+  }
+
+  .activity-card__status--full {
+    color: #b8860b;
+  }
+
+  .activity-card__status--closed {
+    color: var(--color-text-muted);
+  }
+
+  .activity-card__registration .button {
+    width: 100%;
   }
 </style>

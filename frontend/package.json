@@ -6,12 +6,17 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
-    "preview": "astro preview"
+    "preview": "astro preview",
+    "check": "astro check"
   },
   "dependencies": {
     "astro": "5.18.2",
     "@fontsource/roboto": "5.2.10",
     "@fontsource/roboto-slab": "5.2.8"
+  },
+  "devDependencies": {
+    "@astrojs/check": "0.9.9",
+    "typescript": "6.0.3"
   },
   "engines": {
     "node": ">=20"
