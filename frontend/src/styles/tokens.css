@@ -1,0 +1,107 @@
+/* Self-hosted brand fonts (extracted from loefbijter.nl's Elementor config:
+   Roboto for body/nav/buttons, Roboto Slab for display headings). */
+@import "@fontsource/roboto/400.css";
+@import "@fontsource/roboto/500.css";
+@import "@fontsource/roboto/700.css";
+@import "@fontsource/roboto-slab/600.css";
+@import "@fontsource/roboto-slab/700.css";
+
+:root {
+  /* Brand palette, extracted from loefbijter.nl's Elementor kit + intro page CSS. */
+  --color-primary: #358ec3;       /* buttons, headings */
+  --color-primary-hover: #1bb1e6; /* button hover/focus */
+  --color-navy: #234193;          /* deep accent, header/footer backgrounds */
+  --color-accent: #61ce70;        /* green accent (nav active state) */
+  --color-text: #333333;
+  --color-text-muted: #7a7a7a;
+  --color-text-secondary: #54595f;
+  --color-background: #ffffff;
+  --color-background-alt: #f4f8fb;
+  --color-border: #e0e6eb;
+  --color-danger: #c0392b;
+
+  --font-body: "Roboto", system-ui, sans-serif;
+  --font-heading: "Roboto Slab", "Roboto", system-ui, serif;
+
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+
+  --space-1: 0.5rem;
+  --space-2: 1rem;
+  --space-3: 1.5rem;
+  --space-4: 2.5rem;
+  --space-5: 4rem;
+
+  --container-width: 72rem;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  color: var(--color-text);
+  background: var(--color-background);
+  line-height: 1.6;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-heading);
+  color: var(--color-primary);
+  line-height: 1.2;
+  margin: 0 0 var(--space-2);
+}
+
+a {
+  color: var(--color-primary);
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+.container {
+  max-width: var(--container-width);
+  margin: 0 auto;
+  padding: 0 var(--space-2);
+}
+
+.button {
+  display: inline-block;
+  background: var(--color-primary);
+  color: #fff;
+  font-family: var(--font-body);
+  font-weight: 500;
+  text-decoration: none;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.button:hover,
+.button:focus {
+  background: var(--color-primary-hover);
+  color: #fff;
+}
+
+.button--secondary {
+  background: transparent;
+  color: var(--color-primary);
+  border: 2px solid var(--color-primary);
+}
+
+.button--secondary:hover,
+.button--secondary:focus {
+  background: var(--color-primary);
+  color: #fff;
+}

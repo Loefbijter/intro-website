@@ -15,6 +15,18 @@ enough to need confirmation are called out explicitly.
   patch that happened to still allow Node 20 (`6.0.4`, on the edge of a
   version line already moving to Node-22-only) — the 5.x line is broadly
   tested against Node 20, not just barely compatible with it.
+  **Update (milestone 4):** `npm audit` flags 5.18.2 for 5 known Astro
+  advisories (XSS in `define:vars`, server-island parameter replay, reflected
+  XSS via slot names, XSS via spread props, host-header SSRF in prerendered
+  error pages) — all fixed only in the 7.x line, not backported to 5.x/6.x.
+  Assessed as low real-world risk here specifically because this site uses
+  `output: "static"` (SPEC §2's "public pages are static HTML/CSS"): there's
+  no SSR, no server islands, and the dynamic activities data is fetched
+  client-side via JS rather than through Astro's own templating at
+  request-time, so the exploitable surface for these advisories isn't
+  present in how this site is built or served. Flagging this explicitly
+  rather than silently swallowing the audit warning — if the Node pin is
+  ever raised to 22 LTS, upgrading to Astro 7.x closes this out cleanly.
 
 - **Frontend Dockerfile is single-stage, not multi-stage.** SPEC §3 describes
   it as "multi-stage: node build → files to /output", but SPEC §9's
@@ -91,3 +103,40 @@ enough to need confirmation are called out explicitly.
   lenient about stray keys (e.g. a stale field from a cached frontend after
   the activity's schema changed) avoids spurious registration failures for
   something the registrant can't fix.
+
+## Milestone 4
+
+- **Hero image is a generic on-brand sailing photo, not a "period poster".**
+  SPEC §8 asks for a "poster image" in the hero, and the live `/intro` page's
+  `og:image` (`image_2025-08-25_002115675.png`) looked like the obvious
+  candidate at first. Checking its position in the live HTML showed it
+  actually belongs to `/intro`'s *Na-introductie* (September, after the main
+  week) subsection, not the hero — and its content is a dated
+  "NA-INTRO PROGRAMMA 2025" graphic with September 2025 dates, which would
+  read as stale and mismatched against this site's August-2026 fixture data.
+  By contrast, `/voorjaarsintro` *does* have a correctly-scoped, period-named
+  hero poster (`Voorjaarsintro-2026-819x1024.png`), confirming each period
+  normally gets its own bespoke poster — one doesn't exist yet for whatever
+  the next August intro period will be. Used a generic, unbranded-date photo
+  of Loefbijter boats sailing the Waal instead (also extracted from
+  loefbijter.nl, self-hosted per SPEC §8's "do not hotlink" rule). The board
+  should swap in that period's real poster (`frontend/src/assets/hero-photo.jpg`,
+  referenced from `Hero.astro`) once it exists, same as any other per-period
+  copy change (SPEC §1: "the site is revamped per period").
+- **Fonts self-hosted via `@fontsource/roboto` + `@fontsource/roboto-slab`
+  npm packages**, not by copying the WordPress site's font files. The site
+  uses Roboto (body/nav/buttons) and Roboto Slab (SPEC §8 palette/fonts
+  extraction), confirmed via the live site's Elementor global-typography CSS
+  variables. Fontsource ships the same Google Fonts as self-hosted npm
+  packages bundled at build time — satisfies "committed to the repo, not
+  hotlinked" more cleanly than vendoring WordPress's specific pre-subset
+  font files, and avoids a runtime request to Google Fonts' CDN too.
+- **Dev gotcha, not a repo bug: adding an npm/pip dependency requires
+  `docker compose up --build --renew-anon-volumes <service>`, not just
+  `--build`.** `docker-compose.override.yml`'s `/app/node_modules` (and
+  Python's site-packages inside the image) live behind an anonymous volume
+  that Compose reuses across recreations by default, so a rebuilt image's
+  fresh `npm install`/`pip install` output is masked by the stale volume
+  until it's explicitly renewed. Hit this firsthand adding `@fontsource/*`.
+  Worth remembering for milestones 5–7 too whenever `requirements.txt` or
+  `package.json` changes.

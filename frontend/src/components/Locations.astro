@@ -1,0 +1,65 @@
+---
+import { locations } from "../content/locations.ts";
+---
+
+<section id="locaties" class="locations container">
+  <h2>Locaties</h2>
+  <div class="locations__grid">
+    {
+      locations.map((location) => (
+        <div class="locations__item">
+          <p class="locations__name">
+            <em>{location.name}</em>
+          </p>
+          <p class="locations__address">
+            {location.addressLines.map((line) => (
+              <>
+                <em>{line}</em>
+                <br />
+              </>
+            ))}
+          </p>
+          <iframe
+            src={location.mapsEmbedUrl}
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            title={`Kaart: ${location.name}`}
+          />
+        </div>
+      ))
+    }
+  </div>
+</section>
+
+<style>
+  .locations {
+    padding-block: var(--space-4);
+  }
+
+  .locations__grid {
+    display: grid;
+    gap: var(--space-3);
+  }
+
+  .locations__name {
+    margin: 0;
+  }
+
+  .locations__address {
+    margin: 0 0 var(--space-1);
+    color: var(--color-text-muted);
+  }
+
+  .locations__item iframe {
+    width: 100%;
+    height: 240px;
+    border: 0;
+    border-radius: var(--radius-md);
+  }
+
+  @media (min-width: 800px) {
+    .locations__grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+</style>

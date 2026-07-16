@@ -1,0 +1,48 @@
+---
+import { Content, frontmatter } from "../content/hero.md";
+import heroPhoto from "../assets/hero-photo.jpg";
+import JumpNav from "./JumpNav.astro";
+---
+
+<section class="hero container">
+  <div class="hero__text">
+    <h1>{frontmatter.title}</h1>
+    <div class="hero__copy">
+      <Content />
+    </div>
+    <JumpNav />
+  </div>
+  <div class="hero__photo">
+    <img src={heroPhoto.src} alt={frontmatter.heroImageAlt} width="1024" height="683" />
+  </div>
+</section>
+
+<style>
+  .hero {
+    display: grid;
+    gap: var(--space-4);
+    padding-block: var(--space-4);
+    align-items: start;
+  }
+
+  .hero__copy :global(p) {
+    margin: 0 0 var(--space-2);
+  }
+
+  .hero__photo img {
+    border-radius: var(--radius-md);
+    box-shadow: 0 8px 24px rgba(35, 65, 147, 0.15);
+    width: 100%;
+    height: auto;
+  }
+
+  @media (min-width: 800px) {
+    .hero {
+      grid-template-columns: 3fr 2fr;
+    }
+
+    .hero__photo {
+      align-self: center;
+    }
+  }
+</style>

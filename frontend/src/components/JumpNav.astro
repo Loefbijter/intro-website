@@ -1,0 +1,37 @@
+---
+const links = [
+  { href: "#programma", label: "Programma" },
+  { href: "#waz", label: "WoensdagAvondZeilen" },
+  { href: "#locaties", label: "Locaties" },
+];
+---
+
+<nav class="jump-nav" aria-label="Snel naar sectie">
+  <ul class="jump-nav__list">
+    {
+      links.map((link) => (
+        <li>
+          <a href={link.href} class="button button--secondary">
+            {link.label}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</nav>
+
+<style>
+  .jump-nav__list {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-1);
+    margin: 0;
+    padding: 0;
+  }
+
+  .jump-nav .button {
+    background: #fff;
+  }
+</style>

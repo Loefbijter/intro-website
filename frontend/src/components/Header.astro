@@ -1,0 +1,56 @@
+---
+import logo from "../assets/logo.png";
+---
+
+<header class="site-header">
+  <div class="container site-header__inner">
+    <a href="https://loefbijter.nl" class="site-header__logo-link">
+      <img src={logo.src} alt="NSZV De Loefbijter" class="site-header__logo" />
+    </a>
+    <nav class="site-header__actions">
+      <a href="https://loefbijter.nl/?page_id=634" class="button">Word lid</a>
+      <a href="https://app.loefbijter.nl/" class="button button--secondary">Inloggen</a>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    background: var(--color-background);
+    border-bottom: 1px solid var(--color-border);
+    position: sticky;
+    top: 0;
+    z-index: 20;
+  }
+
+  .site-header__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-block: var(--space-1);
+    gap: var(--space-2);
+  }
+
+  .site-header__logo {
+    height: 44px;
+    width: auto;
+  }
+
+  .site-header__actions {
+    display: flex;
+    gap: var(--space-1);
+    flex-wrap: wrap;
+  }
+
+  .site-header__actions .button {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  @media (max-width: 480px) {
+    .site-header__actions .button {
+      padding: 0.4rem 0.7rem;
+      font-size: 0.8rem;
+    }
+  }
+</style>

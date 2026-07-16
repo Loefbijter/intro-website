@@ -1,0 +1,27 @@
+---
+import { Content, frontmatter } from "../content/waz.md";
+---
+
+<section id="waz" class="waz container">
+  <h2>{frontmatter.title}</h2>
+  <div class="waz__copy">
+    <Content />
+  </div>
+  <a href={frontmatter.linkUrl} class="button" target="_blank" rel="noopener noreferrer">
+    {frontmatter.linkText}
+  </a>
+</section>
+
+<style>
+  .waz {
+    padding-block: var(--space-4);
+  }
+
+  .waz__copy {
+    max-width: 42rem;
+  }
+
+  .waz__copy :global(p) {
+    margin: 0 0 var(--space-2);
+  }
+</style>

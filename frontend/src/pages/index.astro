@@ -1,14 +1,32 @@
 ---
+import "../styles/tokens.css";
+import Header from "../components/Header.astro";
+import Hero from "../components/Hero.astro";
+import ActivityList from "../components/ActivityList.astro";
+import WazBlock from "../components/WazBlock.astro";
+import Locations from "../components/Locations.astro";
+import Footer from "../components/Footer.astro";
 ---
+
 <!doctype html>
 <html lang="nl">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>intro.loefbijter.nl</title>
+    <title>Introductieperiode 2026 — NSZV De Loefbijter</title>
+    <meta
+      name="description"
+      content="Alle activiteiten van de introductieperiode van NSZV De Loefbijter, inclusief inschrijving."
+    />
   </head>
   <body>
-    <h1>intro.loefbijter.nl</h1>
-    <p>Scaffold werkt — milestone 1.</p>
+    <Header />
+    <main>
+      <Hero />
+      <ActivityList />
+      <WazBlock />
+      <Locations />
+    </main>
+    <Footer />
   </body>
 </html>

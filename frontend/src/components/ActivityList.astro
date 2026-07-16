@@ -1,0 +1,22 @@
+---
+// Placeholder for the static shell (milestone 4). The real client-side
+// island that fetches /api/activities/ and renders cards + the
+// registration modal is built in milestone 5.
+---
+
+<section id="programma" class="programma container">
+  <h2>Programma</h2>
+  <div id="activity-list" class="programma__list">
+    <p class="programma__loading">Activiteiten worden geladen...</p>
+  </div>
+</section>
+
+<style>
+  .programma {
+    padding-block: var(--space-4);
+  }
+
+  .programma__loading {
+    color: var(--color-text-muted);
+  }
+</style>
