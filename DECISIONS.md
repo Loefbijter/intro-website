@@ -66,3 +66,28 @@ enough to need confirmation are called out explicitly.
   dev and prod `.env` files, and setting it unconditionally would stop
   `docker-compose.override.yml` from auto-applying in dev, breaking
   `make dev`. Documented as a prod-only line to uncomment at deploy time.
+
+## Milestone 3
+
+- **Honeypot field is named `website`.** SPEC §6 says "Honeypot hidden field
+  — reject silently if filled" without naming it. Used the common convention
+  of naming it after a plausible-looking real field (`website`) rather than
+  literally `honeypot`, since an obviously-named trap field is easier for
+  bots to detect and skip.
+- **HTTP status codes for register errors are my own choice** (SPEC lists the
+  Dutch messages, not status codes): 201 for both confirmed/waitlist success
+  (and the faked honeypot response), 409 for duplicate email, 403 for
+  closed/not-yet-open windows and for activities that don't use the standard
+  flow (`requires_registration=False` or an external URL set), 400 for
+  field/consent/custom-field validation errors, 429 for rate-limiting.
+- **Rate limiting is per-gunicorn-worker**, using Django's default in-process
+  `LocMemCache` — no Redis/Memcached added. `django-ratelimit`'s counters
+  aren't shared across workers, so the effective limit scales with worker
+  count. Acceptable for this club's traffic volume; flagged here in case
+  gunicorn is ever run with `--workers > 1` and the limit needs to be exact.
+- **Unknown custom-field answer keys are silently dropped**, not rejected,
+  when saving a registration (`services._validate_answers`). SPEC's schema
+  validation focus is on required/type-correctness of *known* fields; being
+  lenient about stray keys (e.g. a stale field from a cached frontend after
+  the activity's schema changed) avoids spurious registration failures for
+  something the registrant can't fix.
