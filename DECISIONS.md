@@ -168,3 +168,34 @@ enough to need confirmation are called out explicitly.
   (needed for `npm run check` / `astro check`) declares a peer range of
   `^5.0.0 || ^6.0.0`, so TypeScript 7.x fails `npm install` outright. Used
   the newest version inside that peer range instead.
+
+## Milestone 7
+
+- **Fixed a real bug from milestone 3: rate-limiting's `client_ip_key` used
+  `django-ipware`'s `proxy_count=2`, following SPEC §9's literal wording
+  ("trusting exactly the two known proxy hops"). Verified empirically (see
+  `activities/tests/test_client_ip.py`) that `proxy_count=2` is wrong for
+  this specific Apache→nginx→gunicorn chain and would have shipped a
+  security bug to prod:**
+  - With no attacker interference, `proxy_count=2` resolves to `None` for
+    *every* legitimate request — rate limiting silently stops functioning
+    for all real traffic.
+  - Worse: if a client sends their own forged `X-Forwarded-For` header
+    before ever reaching Apache, `proxy_count=2` resolves to *that attacker-
+    supplied value* — i.e. an attacker could pick any IP they like and rate
+    limiting would trust it, making the whole mechanism trivially bypassable.
+
+  The reason: `proxy_count` in ipware means "how many trailing entries in
+  the X-Forwarded-For list are proxies' own addresses, to be discarded
+  before reading the client IP." Apache is internet-facing with nothing in
+  front of it, so the entry *it* contributes is never "Apache's own address"
+  — it's the real client's IP, captured straight from the TCP peer (which a
+  client cannot spoof via headers). Only nginx's contribution is a proxy's
+  own address (Apache's loopback IP) that needs discarding. Two physical
+  proxies in the chain ≠ two discardable entries; the first hop's entry
+  *is* the answer, not noise to skip past. Correct value: `proxy_count=1`.
+  Changed `activities/api.py`, added a comment there capturing this
+  reasoning inline (since it's exactly the kind of non-obvious constraint
+  that invites a future "fix" back to the SPEC's literal `2`), and added
+  `test_client_ip.py` as a standing regression test against both failure
+  modes described above.

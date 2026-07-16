@@ -18,7 +18,16 @@ from .serializers import ActivitySerializer, RegisterSerializer
 
 
 def client_ip_key(group, request):
-    ip, _ = get_client_ip(request, proxy_count=2)
+    # proxy_count=1, not 2, despite there being two proxies (Apache, nginx) in
+    # front of gunicorn. Apache is internet-facing with nothing in front of it,
+    # so the entry *it* contributes to X-Forwarded-For is already the real
+    # client IP (captured from the raw TCP peer, not merely relayed from a
+    # spoofable header) — there's nothing to "skip past" for that hop. Only
+    # nginx's hop appends a proxy's own address (Apache's) that needs
+    # discarding. Verified empirically: proxy_count=2 returns None for every
+    # legitimate request (breaking rate limiting outright) and, worse, returns
+    # the attacker-supplied IP when a client sends a forged X-Forwarded-For.
+    ip, _ = get_client_ip(request, proxy_count=1)
     return ip or "unknown"
 
 
