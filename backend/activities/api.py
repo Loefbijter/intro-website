@@ -1,6 +1,5 @@
 from django_ratelimit.decorators import ratelimit
 from django.utils.decorators import method_decorator
-from ipware import get_client_ip
 from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -18,17 +17,26 @@ from .serializers import ActivitySerializer, RegisterSerializer
 
 
 def client_ip_key(group, request):
-    # proxy_count=1, not 2, despite there being two proxies (Apache, nginx) in
-    # front of gunicorn. Apache is internet-facing with nothing in front of it,
-    # so the entry *it* contributes to X-Forwarded-For is already the real
-    # client IP (captured from the raw TCP peer, not merely relayed from a
-    # spoofable header) — there's nothing to "skip past" for that hop. Only
-    # nginx's hop appends a proxy's own address (Apache's) that needs
-    # discarding. Verified empirically: proxy_count=2 returns None for every
-    # legitimate request (breaking rate limiting outright) and, worse, returns
-    # the attacker-supplied IP when a client sends a forged X-Forwarded-For.
-    ip, _ = get_client_ip(request, proxy_count=1)
-    return ip or "unknown"
+    """Rate-limit bucket key: the real client IP.
+
+    Production chain: Cloudflare -> Apache -> nginx -> gunicorn. Apache runs
+    mod_remoteip with `RemoteIPHeader CF-Connecting-IP`, trusting only
+    Cloudflare's IP ranges, which restores the true visitor IP; mod_proxy_http
+    then appends that authoritative IP to X-Forwarded-For, and nginx appends
+    its own upstream peer (Apache, on 127.0.0.1). So the header always ends
+    with "<real client>, <nginx loopback>" and the real client is the
+    second-from-last entry.
+
+    Reading that fixed position — rather than counting a variable number of
+    proxies — is why a client-forged X-Forwarded-For cannot influence the
+    result: anything a client sends lands to the LEFT of Apache's authoritative
+    entry, which is never at the second-from-last slot.
+    """
+    forwarded = request.META.get("HTTP_X_FORWARDED_FOR", "")
+    chain = [part.strip() for part in forwarded.split(",") if part.strip()]
+    if len(chain) >= 2:
+        return chain[-2]
+    return request.META.get("REMOTE_ADDR", "unknown")
 
 
 class ActivityListView(generics.ListAPIView):

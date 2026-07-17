@@ -169,36 +169,52 @@ enough to need confirmation are called out explicitly.
   `^5.0.0 || ^6.0.0`, so TypeScript 7.x fails `npm install` outright. Used
   the newest version inside that peer range instead.
 
-## Milestone 7
+## Client IP for rate limiting (behind Cloudflare)
 
-- **Fixed a real bug from milestone 3: rate-limiting's `client_ip_key` used
-  `django-ipware`'s `proxy_count=2`, following SPEC §9's literal wording
-  ("trusting exactly the two known proxy hops"). Verified empirically (see
-  `activities/tests/test_client_ip.py`) that `proxy_count=2` is wrong for
-  this specific Apache→nginx→gunicorn chain and would have shipped a
-  security bug to prod:**
-  - With no attacker interference, `proxy_count=2` resolves to `None` for
-    *every* legitimate request — rate limiting silently stops functioning
-    for all real traffic.
-  - Worse: if a client sends their own forged `X-Forwarded-For` header
-    before ever reaching Apache, `proxy_count=2` resolves to *that attacker-
-    supplied value* — i.e. an attacker could pick any IP they like and rate
-    limiting would trust it, making the whole mechanism trivially bypassable.
+**Supersedes an earlier decision.** Milestones 3/7 reasoned about client-IP
+resolution assuming the SPEC's three-hop chain (Apache → nginx → gunicorn) with
+no CDN, and landed on `django-ipware` `proxy_count=1`. **Deployment revealed the
+site actually sits behind Cloudflare**, making the real chain four hops:
 
-  The reason: `proxy_count` in ipware means "how many trailing entries in
-  the X-Forwarded-For list are proxies' own addresses, to be discarded
-  before reading the client IP." Apache is internet-facing with nothing in
-  front of it, so the entry *it* contributes is never "Apache's own address"
-  — it's the real client's IP, captured straight from the TCP peer (which a
-  client cannot spoof via headers). Only nginx's contribution is a proxy's
-  own address (Apache's loopback IP) that needs discarding. Two physical
-  proxies in the chain ≠ two discardable entries; the first hop's entry
-  *is* the answer, not noise to skip past. Correct value: `proxy_count=1`.
-  Changed `activities/api.py`, added a comment there capturing this
-  reasoning inline (since it's exactly the kind of non-obvious constraint
-  that invites a future "fix" back to the SPEC's literal `2`), and added
-  `test_client_ip.py` as a standing regression test against both failure
-  modes described above.
+    Cloudflare → Apache → nginx → gunicorn
+
+That invalidates the old approach and the `proxy_count` reasoning entirely:
+
+- **The bug it caused.** Without anything recovering the true visitor IP,
+  Django saw a **Cloudflare edge IP** as the client for every request, so
+  `django-ratelimit` bucketed all visitors into one shared key — the
+  registration rate limit either locked everyone out at once, or (if the count
+  were raised to compensate) protected nothing.
+- **`proxy_count` is fundamentally fragile here.** Cloudflare adds its own
+  `X-Forwarded-For` entry, and a client can prepend a forged one, so the total
+  number of entries varies per request. Any fixed `proxy_count` is wrong for
+  some requests: `proxy_count=1` (correct for the old 3-hop chain) returns
+  `None` for the normal 4-hop chain, breaking rate limiting outright.
+
+**Fix — at the edge, not by counting.** Apache runs `mod_remoteip` with
+`RemoteIPHeader CF-Connecting-IP`, trusting **only** Cloudflare's published IP
+ranges (fetched from cloudflare.com/ips-v4 + /ips-v6, not memorised). Cloudflare
+sets `CF-Connecting-IP` to the true visitor and a client cannot forge it past
+Cloudflare; `mod_remoteip` ignores it entirely on any connection not coming from
+a Cloudflare range (so a direct-to-origin hit can't spoof it either). With the
+visitor IP restored at Apache, `mod_proxy_http` appends **that** IP to
+`X-Forwarded-For`, and nginx appends its own loopback peer. The header therefore
+always ends `"<real client>, 127.0.0.1"`.
+
+`client_ip_key` (in `activities/api.py`) now just reads the **second-from-last**
+`X-Forwarded-For` entry — the one Apache authoritatively appended — with no
+proxy library and no count parameter. A client-forged `X-Forwarded-For` only
+ever lands to the *left* of Apache's entry, so it can't reach the
+second-from-last slot and can't influence the key. Dropped the now-unused
+`django-ipware` dependency. `test_client_ip.py` covers the Cloudflare chain, the
+"reads Apache's entry, not the leftmost" property, the spoofing attempt, and the
+degenerate-fallback case.
+
+(Note: at Django, `REMOTE_ADDR` is nginx's container IP — there are two internal
+hops below Cloudflare — so the real client genuinely lives in `X-Forwarded-For`,
+not `REMOTE_ADDR`. If a future change wanted `REMOTE_ADDR` to hold the client
+directly, nginx's `realip` module would be the place; it isn't needed for
+correctness here.)
 
 ## Post-milestone: real Introweek 2026 programme + flyer
 

@@ -30,11 +30,15 @@ developed and tested locally in an IDE first, then ported to the production EC2.
 ## 2. Architecture
 
 ```
-Internet
-   │  HTTPS (existing Let's Encrypt cert)
+Visitor
+   │  HTTPS
    ▼
-Host Apache  (intro.loefbijter.nl vhost)
-   │  ProxyPass / → http://127.0.0.1:8080   (sets X-Forwarded-Proto + X-Forwarded-For)
+Cloudflare  (proxied DNS; terminates visitor TLS; SSL mode Full (strict))
+   │  HTTPS to origin; sets CF-Connecting-IP = real visitor IP
+   ▼
+Host Apache  (intro.loefbijter.nl vhost; Let's Encrypt cert via webroot)
+   │  mod_remoteip: RemoteIPHeader CF-Connecting-IP (trusts CF ranges only) → real client IP
+   │  ProxyPass / → http://127.0.0.1:8080   (X-Forwarded-Proto + real-client X-Forwarded-For)
    ▼
 ┌───────────────────────── Docker Compose ─────────────────────────┐
 │  web  (nginx, 127.0.0.1:8080→:80)                                 │
@@ -424,19 +428,34 @@ server {
 }
 ```
 
-### Host Apache (thin proxy, existing Let's Encrypt cert)
+### Host Apache (behind Cloudflare, thin proxy)
 
-Enable `mod_proxy`, `mod_proxy_http`, `mod_headers`:
+The site sits behind Cloudflare (proxied DNS, SSL mode **Full (strict)**), so
+Apache must (a) recover the real visitor IP from Cloudflare's `CF-Connecting-IP`
+via `mod_remoteip`, trusting only Cloudflare's published ranges, and (b) always
+serve a valid origin cert (issued via **webroot** — see §10 / `deploy/deploy.md`).
+
+Enable `mod_proxy`, `mod_proxy_http`, `mod_headers`, `mod_rewrite`, `mod_ssl`,
+`mod_remoteip`. The full, authoritative vhost lives in
+`deploy/intro.loefbijter.nl.conf`; sketch:
 
 ```apache
 <VirtualHost *:443>
     ServerName intro.loefbijter.nl
+    SSLEngine On
+    SSLCertificateFile    /etc/letsencrypt/live/intro.loefbijter.nl/fullchain.pem
+    SSLCertificateKeyFile /etc/letsencrypt/live/intro.loefbijter.nl/privkey.pem
+
+    # Real visitor IP from Cloudflare (trust CF ranges only — refresh from
+    # cloudflare.com/ips-v4 and /ips-v6). mod_proxy_http then appends the
+    # recovered client IP to X-Forwarded-For.
+    RemoteIPHeader CF-Connecting-IP
+    RemoteIPTrustedProxy <Cloudflare IPv4 + IPv6 ranges>
+
     ProxyPreserveHost On
     RequestHeader set X-Forwarded-Proto "https"
-    # Apache adds X-Forwarded-For automatically via mod_proxy
     ProxyPass        /  http://127.0.0.1:8080/
     ProxyPassReverse /  http://127.0.0.1:8080/
-    # SSL*: reuse existing Let's Encrypt configuration
 </VirtualHost>
 ```
 
@@ -452,8 +471,11 @@ TIME_ZONE = "Europe/Amsterdam"; LANGUAGE_CODE = "nl"; USE_TZ = True
 STATIC_URL = "/django-static/"; STATIC_ROOT = "/app/staticfiles"
 MEDIA_URL = "/media/"; MEDIA_ROOT = "/app/media"
 RETENTION_DAYS = env.int("RETENTION_DAYS", 30)
-# Client IP for rate limiting: derive from X-Forwarded-For, trusting exactly the
-# two known proxy hops (Apache + nginx) — e.g. django-ipware or a small middleware.
+# Client IP for rate limiting: Apache's mod_remoteip recovers the real visitor IP
+# from Cloudflare's CF-Connecting-IP (trusting CF ranges only) and mod_proxy_http
+# appends it to X-Forwarded-For; nginx appends its loopback peer. Read the entry
+# Apache appends — the second-from-last X-Forwarded-For value. A client-forged
+# X-Forwarded-For lands to its left and cannot influence the key. See DECISIONS.md.
 ```
 
 ---
