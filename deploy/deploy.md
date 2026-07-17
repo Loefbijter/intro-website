@@ -136,9 +136,12 @@ make build
 make up
 ```
 
-`make build` only rebuilds changed layers; `make up` recreates only the
-containers whose config/image changed. Copy changes (hardcoded frontend text)
-follow the same flow. Redeploys don't touch Apache or the cert.
+`make build` force-rebuilds the frontend one-shot (`--build`) so the static
+`dist/` in `web_dist` always reflects the pulled source — the profiled builder
+is otherwise not rebuilt by Compose on its own, which silently serves stale
+frontend code (see `DECISIONS.md`). `make up` recreates only the containers
+whose config/image changed. Copy changes (hardcoded frontend text) follow the
+same flow. Redeploys don't touch Apache or the cert.
 
 **Purge Cloudflare's cache** for the static site after a redeploy that changes
 the build (Astro output filenames are content-hashed, so `index.html` is the

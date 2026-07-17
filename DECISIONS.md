@@ -337,3 +337,24 @@ correctness here.)
   sits beside the text; on mobile it stacks on top.
 - No public-facing scope was added to registration: the teaser has no signup
   (that opens once the weekend is announced via the admin).
+
+## Fix: stale frontend served after redeploy
+
+- **Bug:** `make build` could serve an out-of-date frontend on redeploys, which
+  surfaced as "Kon activiteiten niet laden" the moment a to-be-announced
+  (null-date) activity was published — the old JS bundle predated the null-date
+  handling and threw on it (disabling that activity "fixed" it because then no
+  null-date activity was returned). Root cause was Compose behaviour, not app
+  code: on prod (no `COMPOSE_PROFILES`), `docker compose build` skips the
+  profiled `frontend` service, and `docker compose run` only builds an image
+  when one is *missing* — so after the first deploy, every `make build`
+  re-ran the one-shot builder from the **stale** frontend image and copied an
+  old `dist/` into the `web_dist` volume. First deploys were fine; redeploys
+  silently shipped old frontend code.
+- **Fix:** `make build`'s frontend one-shot now passes `--build`
+  (`docker compose --profile build run --rm --build frontend`), forcing the
+  image to rebuild from current source every time. Verified a fresh prod build
+  renders the null-date TBA card at the nginx path (:8080) with no error.
+- General rule for this repo: anything that rebuilds the frontend for prod must
+  force it (`--build`), because the builder is a profiled one-shot that Compose
+  won't rebuild on its own.

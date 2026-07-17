@@ -5,7 +5,7 @@ dev:
 
 build:
 	docker compose build
-	docker compose --profile build run --rm frontend
+	docker compose --profile build run --rm --build frontend
 
 up:
 	docker compose up -d backend web
