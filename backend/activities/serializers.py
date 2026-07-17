@@ -14,7 +14,7 @@ class ActivitySerializer(serializers.ModelSerializer):
         model = Activity
         fields = [
             "title", "slug", "date", "time_text", "theme", "location_text",
-            "description", "image", "cost_note",
+            "description", "image", "video_url", "cost_note",
             "requires_registration", "external_registration_url",
             "capacity", "registration_opens_at", "registration_closes_at",
             "collect_phone", "collect_study", "collect_dietary",

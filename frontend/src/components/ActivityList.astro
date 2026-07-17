@@ -113,4 +113,55 @@ import RegisterModal from "./RegisterModal.astro";
   .activity-card__registration .button {
     width: 100%;
   }
+
+  /* "Datum volgt" badge + teaser status for to-be-announced activities. */
+  .activity-card__date--tba {
+    align-self: flex-start;
+    background: var(--color-gold);
+    color: var(--color-on-gold);
+    padding: 0.1rem 0.55rem;
+    border-radius: var(--radius-sm);
+    font-weight: 700;
+  }
+
+  .activity-card__status--tba {
+    color: var(--color-primary);
+    font-weight: 700;
+  }
+
+  /* Video embed (e.g. the introduction-weekend aftermovie). */
+  .activity-card__video {
+    background: #000;
+  }
+
+  .activity-card__video iframe {
+    display: block;
+    width: 100%;
+    height: 600px;
+    border: 0;
+  }
+
+  /* A card carrying a video spans the full grid width so the embed has room. */
+  .activity-card--featured {
+    grid-column: 1 / -1;
+  }
+
+  @media (min-width: 800px) {
+    .activity-card--featured {
+      flex-direction: row;
+    }
+
+    .activity-card--featured .activity-card__video {
+      flex: 0 0 340px;
+    }
+
+    .activity-card--featured .activity-card__video iframe {
+      height: 100%;
+      min-height: 600px;
+    }
+
+    .activity-card--featured .activity-card__body {
+      flex: 1;
+    }
+  }
 </style>

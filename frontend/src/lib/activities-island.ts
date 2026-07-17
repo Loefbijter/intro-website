@@ -9,7 +9,23 @@ function escapeHtml(value: string): string {
   return div.innerHTML;
 }
 
+// Convert a supported video URL to an embeddable iframe src. Only known
+// providers are matched (the src is rebuilt from a captured id), so a
+// board-pasted URL can't inject an arbitrary iframe target.
+function videoEmbedSrc(url: string): string | null {
+  const instagram = url.match(/instagram\.com\/(?:p|reel|tv)\/([A-Za-z0-9_-]+)/);
+  if (instagram) return `https://www.instagram.com/p/${instagram[1]}/embed`;
+  const youtube = url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([A-Za-z0-9_-]+)/);
+  if (youtube) return `https://www.youtube.com/embed/${youtube[1]}`;
+  return null;
+}
+
 function renderRegistrationControl(activity: Activity): string {
+  // No date yet = "to be announced": show a teaser message, no signup UI.
+  if (!activity.date) {
+    return `<p class="activity-card__status activity-card__status--tba">Meer info volgt — houd onze socials in de gaten!</p>`;
+  }
+
   if (!activity.requires_registration) {
     return `<p class="activity-card__status">Aanmelden niet nodig — kom gewoon langs!</p>`;
   }
@@ -39,9 +55,19 @@ function renderRegistrationControl(activity: Activity): string {
 }
 
 function renderCard(activity: Activity): string {
-  const imageHtml = activity.image
-    ? `<img src="${escapeHtml(activity.image)}" alt="" class="activity-card__image" loading="lazy" />`
-    : "";
+  const embedSrc = activity.video_url ? videoEmbedSrc(activity.video_url) : null;
+  const featured = embedSrc !== null;
+
+  let mediaHtml = "";
+  if (embedSrc) {
+    mediaHtml = `<div class="activity-card__video"><iframe src="${escapeHtml(embedSrc)}" title="Video: ${escapeHtml(activity.title)}" loading="lazy" allowfullscreen scrolling="no"></iframe></div>`;
+  } else if (activity.image) {
+    mediaHtml = `<img src="${escapeHtml(activity.image)}" alt="" class="activity-card__image" loading="lazy" />`;
+  }
+
+  const dateHtml = activity.date
+    ? `<p class="activity-card__date">${escapeHtml(formatDutchDate(activity.date))}</p>`
+    : `<p class="activity-card__date activity-card__date--tba">Datum volgt</p>`;
   const themeHtml = activity.theme ? `<p class="activity-card__theme">${escapeHtml(activity.theme)}</p>` : "";
   const timeHtml = activity.time_text ? `<p class="activity-card__time">${escapeHtml(activity.time_text)}</p>` : "";
   const locationHtml = activity.location_text
@@ -53,17 +79,23 @@ function renderCard(activity: Activity): string {
   const descriptionHtml = activity.description
     ? `<p class="activity-card__description">${escapeHtml(activity.description)}</p>`
     : "";
+  // Video present but from an unsupported provider: link out instead of embed.
+  const videoLinkHtml =
+    activity.video_url && !embedSrc
+      ? `<p><a href="${escapeHtml(activity.video_url)}" target="_blank" rel="noopener noreferrer">Bekijk de video</a></p>`
+      : "";
 
   return `
-    <article class="activity-card" data-activity-slug="${escapeHtml(activity.slug)}">
-      ${imageHtml}
+    <article class="activity-card${featured ? " activity-card--featured" : ""}" data-activity-slug="${escapeHtml(activity.slug)}">
+      ${mediaHtml}
       <div class="activity-card__body">
         <h3>${escapeHtml(activity.title)}</h3>
-        <p class="activity-card__date">${escapeHtml(formatDutchDate(activity.date))}</p>
+        ${dateHtml}
         ${themeHtml}
         ${timeHtml}
         ${locationHtml}
         ${descriptionHtml}
+        ${videoLinkHtml}
         ${costHtml}
         <div class="activity-card__registration">
           ${renderRegistrationControl(activity)}

@@ -47,6 +47,17 @@ class TestActivityListEndpoint:
         response = client.get("/api/activities/zonder-foto/")
         assert response.data["image"] is None
 
+    def test_video_url_passthrough(self, client, make_activity):
+        make_activity(slug="met-video", video_url="https://www.instagram.com/p/ABC123/")
+        response = client.get("/api/activities/met-video/")
+        assert response.data["video_url"] == "https://www.instagram.com/p/ABC123/"
+
+    def test_date_can_be_null_for_tba(self, client, make_activity):
+        make_activity(slug="tba", date=None)
+        response = client.get("/api/activities/tba/")
+        assert response.status_code == 200
+        assert response.data["date"] is None
+
     def test_no_personal_data_in_list_response(self, client, make_activity):
         activity = make_activity()
         Registration.objects.create(

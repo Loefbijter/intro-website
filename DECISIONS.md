@@ -294,3 +294,30 @@ enough to need confirmation are called out explicitly.
     `astro.config.mjs` so relative URLs resolve on the :4321 dev server. Prod
     is unchanged — nginx already serves `/media/` from the volume (verified
     both the :4321 dev proxy and :8080 nginx path return the images).
+
+## Post-milestone: to-be-announced activity + video embed
+
+- **Made `Activity.date` nullable to model a genuine "to-be-announced"
+  activity.** The introduction weekend is "sometime in September" with no set
+  date, so storing a fake placeholder date would be dishonest and show a
+  misleading day on the card. A null date is the truthful signal: the card
+  shows a gold "Datum volgt" badge instead of a formatted date, and the
+  registration area shows "Meer info volgt — houd onze socials in de gaten!"
+  instead of any signup UI (the null-date branch takes priority in
+  `renderRegistrationControl`). No date = teaser/announcement card.
+- **Added an `Activity.video_url` field + a controlled embed** rather than
+  allowing HTML in the description (descriptions are still rendered as escaped
+  text for XSS safety, per milestone 5). `videoEmbedSrc()` only recognises
+  Instagram and YouTube URLs and rebuilds the iframe `src` from a captured id,
+  so a board-pasted URL can't point the iframe at an arbitrary target;
+  unrecognised URLs fall back to a plain "Bekijk de video" link. Reusable —
+  any future activity can carry a promo video.
+- **A video-bearing card becomes full-width (`activity-card--featured`,
+  `grid-column: 1 / -1`)** so the embed has room and doesn't distort the
+  3-column grid. Placed the teaser first (`sort_order: 0`) as a "Save the
+  date" banner atop the programme — most prominent for hype, and it keeps the
+  grid clean (the 7 dated cards then flow as full rows, versus a lone card
+  leaving empty cells mid-grid if the banner were last). On desktop the video
+  sits beside the text; on mobile it stacks on top.
+- No public-facing scope was added to registration: the teaser has no signup
+  (that opens once the weekend is announced via the admin).

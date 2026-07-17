@@ -49,7 +49,10 @@ def validate_custom_fields(value):
 class Activity(models.Model):
     title = models.CharField("titel", max_length=140)
     slug = models.SlugField("slug", unique=True)
-    date = models.DateField("datum")
+    date = models.DateField(
+        "datum", null=True, blank=True,
+        help_text="Leeg laten voor een 'nog aan te kondigen' activiteit.",
+    )
     time_text = models.CharField(
         "tijd", max_length=120, blank=True,
         help_text="Bijv. \"21:00\" of \"12:00–18:00, BBQ 18:00\"",
@@ -64,6 +67,10 @@ class Activity(models.Model):
     )
     description = models.TextField("beschrijving", blank=True, help_text="Markdown toegestaan.")
     image = models.ImageField("afbeelding", upload_to="activities/", blank=True)
+    video_url = models.URLField(
+        "promotievideo", blank=True,
+        help_text="Instagram- of YouTube-link; wordt als video op de kaart getoond.",
+    )
     cost_note = models.CharField(
         "kosten", max_length=120, blank=True,
         help_text="Betaling ter plekke, dit is alleen een opmerking.",

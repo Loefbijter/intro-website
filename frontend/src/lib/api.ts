@@ -9,12 +9,13 @@ export interface CustomField {
 export interface Activity {
   title: string;
   slug: string;
-  date: string;
+  date: string | null;
   time_text: string;
   theme: string;
   location_text: string;
   description: string;
   image: string | null;
+  video_url: string;
   cost_note: string;
   requires_registration: boolean;
   external_registration_url: string;

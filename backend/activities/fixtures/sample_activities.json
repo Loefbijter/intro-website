@@ -176,5 +176,31 @@
       "is_published": true,
       "sort_order": 7
     }
+  },
+  {
+    "model": "activities.activity",
+    "pk": 8,
+    "fields": {
+      "title": "Introductieweekend",
+      "slug": "introductieweekend",
+      "date": null,
+      "time_text": "Ergens in september — datum volgt",
+      "theme": "Save the date!",
+      "location_text": "",
+      "description": "Ons legendarische introductieweekend komt eraan! Een heel weekend vol zeilen, gezelligheid en onvergetelijke momenten. Bekijk de aftermovie hieronder en houd onze socials in de gaten voor de aankondiging — dit wil je niet missen!",
+      "video_url": "https://www.instagram.com/p/DOjM3CYjLjv/",
+      "cost_note": "",
+      "requires_registration": false,
+      "external_registration_url": "",
+      "capacity": null,
+      "registration_opens_at": null,
+      "registration_closes_at": null,
+      "collect_phone": true,
+      "collect_study": true,
+      "collect_dietary": false,
+      "custom_fields": [],
+      "is_published": true,
+      "sort_order": 0
+    }
   }
 ]
