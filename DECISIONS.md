@@ -199,3 +199,38 @@ enough to need confirmation are called out explicitly.
   that invites a future "fix" back to the SPEC's literal `2`), and added
   `test_client_ip.py` as a standing regression test against both failure
   modes described above.
+
+## Post-milestone: real Introweek 2026 programme + flyer
+
+- **Replaced the placeholder hero photo with the board's real Introweek 2026
+  flyer** (`frontend/src/assets/flyer-introweek-2026.jpeg`), resolving the
+  milestone-4 note that flagged the generic sailing photo as a stand-in until
+  a real period poster existed. The flyer is the hero image and is clickable
+  to open full-size (it's a text-dense image; the readable/accessible version
+  is the interactive Programma cards below it, which carry proper alt-free
+  semantic text). Removed the now-unused `hero-photo.jpg`.
+- **Rewrote `sample_activities.json` to match the flyer exactly** — the seven
+  real activities (Loefstrand Muziekbingo/Jamsessie, Eetactie, Loefstrand
+  Beachparty, Dinsdagborrel, Loefstrand Fietsversieren, HAN-Introdag,
+  Sportdagen) replacing the earlier demo data. These are seed data the board
+  would otherwise enter via the admin; seeding the real programme keeps the
+  demo/handoff faithful.
+- **Modelled the Eetactie as a separate activity with an external signup URL,
+  not folded into the Loefstrand day cards.** The flyer visually groups
+  "Loefstrand ... + Eetactie" per day, but the two differ functionally: the
+  Loefstrand is drop-in (`requires_registration=False` → "kom gewoon langs"),
+  while the Eetactie needs a signup via the disputen's Google Form
+  (`external_registration_url` → external "Inschrijven" link). Splitting them
+  is the honest representation of that difference. Used one Eetactie card
+  covering both cook nights (17 & 18 Aug) since it's a single shared form,
+  matching the committee text's singular "de link hieronder".
+- **The Eetactie signup appears in two places** — a hero CTA button (matching
+  the committee text's "Meld je aan via de link hieronder") and the Eetactie
+  activity card — both pointing at the same Google Form. Deliberate: two
+  low-friction touchpoints for the main actionable signup, per the request to
+  "engage potential new members to go to one of the activities."
+- **Sportdagen is dated its first day (17 Aug) with the full span in
+  `time_text` ("17, 18, 19 & 26 augustus").** The data model has a single
+  `date`; the card shows the formatted first day plus the spanning
+  `time_text`, mirroring the flyer's "17-18-19-26 augustus". Not worth a
+  multi-day model change for one spanning info card.

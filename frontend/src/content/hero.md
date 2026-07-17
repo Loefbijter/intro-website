@@ -1,17 +1,19 @@
 ---
 title: "Introductieperiode 2026"
-heroImageAlt: "Loefbijter-boten zeilend op de Waal bij Nijmegen"
+flyerAlt: "Programma Introweek 2026 van NSZV De Loefbijter"
+eetactieUrl: "https://docs.google.com/forms/d/e/1FAIpQLSfPZGLi7WCfklJcS3Ccxc3kcAvFl6p6HxrLoxa1DQvvT4-6oQ/viewform"
+eetactieText: "Meld je aan voor de Eetactie"
 ---
 
-Beste student, wat leuk dat je interesse hebt in onze introductieactiviteiten!
-De komende weken staan er tal van activiteiten op de Loefbijter-planning die
-bedoeld zijn om studenten laagdrempelig kennis te laten maken met onze
-vereniging.
+Hey nieuwe student! Wat leuk dat je een kijkje neemt op onze site! Kom gezellig
+kennismaken tijdens de introweek! Ook dit jaar staan we op de intromarkt en
+sportdagen en zijn we te vinden bij Het Bastion met ons beroemde Loefstrand!
 
-Hieronder vind je de planning voor de introductieweek. Wil je na de
-introductieweek langskomen? Dat kan ook! De hele maand september organiseren
-wij open activiteiten waar je naartoe kunt komen zonder ergens aan vast te
-zitten.
+Tijdens de introweek pakken we bij het Loefstrand helemaal uit met extra
+activiteiten, gaan we heerlijk zeilen en natuurlijk maximaal chillen! Dus heb je
+een momentje vrije tijd? Kom vooral even aanwaaien! Vanaf 14:00 zijn er altijd
+Loefjes te vinden!
 
-Zowel introductielopers als studenten die al een tijdje studeren zijn van
-harte welkom om langs te komen. Hopelijk tot snel!
+En mocht je die week nog geen eetplannen hebben: op 17 en 18 augustus wordt er
+heerlijk voor je gekookt door onze disputen! Meld je aan via de link hieronder
+en schuif gezellig aan!

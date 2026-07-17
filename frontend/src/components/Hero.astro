@@ -1,6 +1,6 @@
 ---
 import { Content, frontmatter } from "../content/hero.md";
-import heroPhoto from "../assets/hero-photo.jpg";
+import flyer from "../assets/flyer-introweek-2026.jpeg";
 import JumpNav from "./JumpNav.astro";
 ---
 
@@ -10,11 +10,24 @@ import JumpNav from "./JumpNav.astro";
     <div class="hero__copy">
       <Content />
     </div>
+    <div class="hero__actions">
+      <a
+        href={frontmatter.eetactieUrl}
+        class="button"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        {frontmatter.eetactieText}
+      </a>
+    </div>
     <JumpNav />
   </div>
-  <div class="hero__photo">
-    <img src={heroPhoto.src} alt={frontmatter.heroImageAlt} width="1024" height="683" />
-  </div>
+  <figure class="hero__flyer">
+    <a href={flyer.src} target="_blank" rel="noopener noreferrer">
+      <img src={flyer.src} alt={frontmatter.flyerAlt} width="1024" height="1280" />
+    </a>
+    <figcaption>Tik op de flyer om het volledige programma te bekijken.</figcaption>
+  </figure>
 </section>
 
 <style>
@@ -29,11 +42,26 @@ import JumpNav from "./JumpNav.astro";
     margin: 0 0 var(--space-2);
   }
 
-  .hero__photo img {
+  .hero__actions {
+    margin-bottom: var(--space-3);
+  }
+
+  .hero__flyer {
+    margin: 0;
+  }
+
+  .hero__flyer img {
     border-radius: var(--radius-md);
     box-shadow: 0 8px 24px rgba(35, 65, 147, 0.15);
     width: 100%;
     height: auto;
+  }
+
+  .hero__flyer figcaption {
+    margin-top: var(--space-1);
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    text-align: center;
   }
 
   @media (min-width: 800px) {
@@ -41,8 +69,10 @@ import JumpNav from "./JumpNav.astro";
       grid-template-columns: 3fr 2fr;
     }
 
-    .hero__photo {
-      align-self: center;
+    .hero__flyer {
+      align-self: start;
+      position: sticky;
+      top: var(--space-2);
     }
   }
 </style>
