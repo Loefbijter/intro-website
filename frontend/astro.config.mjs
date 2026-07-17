@@ -13,6 +13,12 @@ export default defineConfig({
           target: "http://backend:8000",
           changeOrigin: true,
         },
+        // Activity images live in Django's media; forward them in dev so
+        // relative /media/ URLs from the API resolve (nginx handles this in prod).
+        "/media": {
+          target: "http://backend:8000",
+          changeOrigin: true,
+        },
       },
     },
   },

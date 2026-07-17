@@ -5,6 +5,7 @@ from .models import Activity
 
 
 class ActivitySerializer(serializers.ModelSerializer):
+    image = serializers.SerializerMethodField()
     spots_remaining = serializers.SerializerMethodField()
     is_full = serializers.SerializerMethodField()
     registration_open = serializers.SerializerMethodField()
@@ -20,6 +21,14 @@ class ActivitySerializer(serializers.ModelSerializer):
             "custom_fields",
             "spots_remaining", "is_full", "registration_open",
         ]
+
+    def get_image(self, obj):
+        # Return a relative /media/... URL (not absolute): the API is always
+        # called with relative URLs and sits behind the Apache→nginx→gunicorn
+        # chain, so building an absolute URL from the request host would be
+        # wrong. nginx serves /media/ in prod; the Astro dev proxy forwards it
+        # to Django in dev.
+        return obj.image.url if obj.image else None
 
     def get_spots_remaining(self, obj):
         return services.spots_remaining(obj)

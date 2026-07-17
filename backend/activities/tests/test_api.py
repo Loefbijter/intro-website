@@ -33,6 +33,20 @@ class TestActivityListEndpoint:
         response = client.get("/api/activities/verborgen/")
         assert response.status_code == 404
 
+    def test_image_returned_as_relative_media_url(self, client, make_activity):
+        activity = make_activity(slug="met-foto")
+        activity.image = "activities/zeilen.jpg"
+        activity.save()
+        response = client.get("/api/activities/met-foto/")
+        # Relative /media/ URL, not an absolute one built from the request host
+        # (which would be wrong behind the Apache->nginx->gunicorn chain).
+        assert response.data["image"] == "/media/activities/zeilen.jpg"
+
+    def test_image_is_null_when_absent(self, client, make_activity):
+        make_activity(slug="zonder-foto")
+        response = client.get("/api/activities/zonder-foto/")
+        assert response.data["image"] is None
+
     def test_no_personal_data_in_list_response(self, client, make_activity):
         activity = make_activity()
         Registration.objects.create(

@@ -261,3 +261,36 @@ enough to need confirmation are called out explicitly.
 - **Kept the blue club logo** as-is: it's the real Loefbijter mark, and the
   flyer itself places the same blue-sails logo on the warm background, so the
   combination is on-brand rather than a clash.
+
+## Post-milestone: activity images + jump-nav hover fix
+
+- **Fixed an invisible jump-nav hover (white text on white background).**
+  `JumpNav.astro`'s scoped `.jump-nav .button { background:#fff }` out-specifies
+  the global `.button--secondary:hover` (Astro adds a scope attribute, raising
+  specificity), so on hover the text turned white while the background stayed
+  white. Added a scoped `.jump-nav .button:hover/:focus` rule that re-asserts
+  the red fill + white text.
+- **Wired up per-activity images end-to-end** (the ImageField existed since
+  milestone 2 but was never exercised with real files). Three photos the board
+  supplied — also used on the voorjaarsintro page — are mapped by theme:
+  sailing → Loefstrand: Beachparty!, feest → Dinsdagborrel, intromarkt →
+  HAN-Introdag. Plumbing:
+  - Images committed as **seed media** under
+    `backend/activities/fixtures/media/activities/` (not `backend/media/`,
+    which is git-ignored) so the repo is self-contained. Converted the 1 MB
+    `intromarkt.png` to a ~100 KB JPEG (photos-as-PNG are wasteful; SPEC §1
+    wants the site fast).
+  - `make seed` now copies that seed media into `MEDIA_ROOT` before
+    `loaddata`, so the fixture's `image` paths resolve. Same command works in
+    prod (the media files are baked into the backend image via `COPY . .`).
+  - **Serializer returns a relative `/media/...` URL** (`obj.image.url`) via a
+    `SerializerMethodField`, not DRF's default absolute URL. Absolute URLs
+    would be built from the request host, which behind the
+    Apache→nginx→gunicorn chain (and the dev Vite proxy with
+    `changeOrigin:true`) resolves to `backend:8000` — unreachable from the
+    browser. Relative URLs match the SPEC's "relative /api URLs only" stance.
+  - **Media serving**: added `static(MEDIA_URL, ...)` to `config/urls.py` under
+    `DEBUG` (Django serves images in dev), and a `/media` proxy to
+    `astro.config.mjs` so relative URLs resolve on the :4321 dev server. Prod
+    is unchanged — nginx already serves `/media/` from the volume (verified
+    both the :4321 dev proxy and :8080 nginx path return the images).

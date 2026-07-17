@@ -34,4 +34,13 @@ const links = [
   .jump-nav .button {
     background: #fff;
   }
+
+  /* Scoped hover must re-assert the red fill: the scoped resting rule above
+     out-specifies the global .button--secondary:hover, which would otherwise
+     leave a white background under the white hover text. */
+  .jump-nav .button:hover,
+  .jump-nav .button:focus {
+    background: var(--color-primary);
+    color: #fff;
+  }
 </style>

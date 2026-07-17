@@ -17,7 +17,7 @@ test:
 	docker compose run --rm backend pytest
 
 seed:
-	docker compose run --rm backend python manage.py loaddata sample_activities
+	docker compose run --rm backend sh -c "cp -r activities/fixtures/media/. /app/media/ && python manage.py loaddata sample_activities"
 
 migrate:
 	docker compose run --rm backend python manage.py migrate
