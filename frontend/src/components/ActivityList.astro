@@ -65,6 +65,7 @@ import RegisterModal from "./RegisterModal.astro";
     display: flex;
     flex-direction: column;
     gap: 0.35rem;
+    flex: 1; /* fill the card so the registration block can sit at the bottom */
   }
 
   .activity-card__body h3 {
@@ -92,7 +93,8 @@ import RegisterModal from "./RegisterModal.astro";
   }
 
   .activity-card__registration {
-    margin-top: var(--space-1);
+    margin-top: auto; /* pin to the bottom of the card */
+    padding-top: var(--space-2);
   }
 
   .activity-card__status {
