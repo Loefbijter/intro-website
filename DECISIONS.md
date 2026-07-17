@@ -234,3 +234,30 @@ enough to need confirmation are called out explicitly.
   `date`; the card shows the formatted first day plus the spanning
   `time_text`, mirroring the flyer's "17-18-19-26 augustus". Not worth a
   multi-day model change for one spanning info card.
+
+## Post-milestone: warm Introweek palette (yellow + red)
+
+- **Re-themed the site from the main loefbijter.nl blue palette to the
+  Introweek's warm yellow/red palette**, at the board's request to keep colours
+  consistent with the intro theme. Re-checked `loefbijter.nl/voorjaarsintro`:
+  its page-specific Elementor CSS overrides the site blue with gold `#E8B950`
+  (buttons + some headings) and red `#D73E2A` (large headings + button
+  hover/focus). Sampled the Introweek 2026 flyer too — dominant gold
+  `#EDBB5B`, cream `#FFEDAD`, teal accents — confirming the same warm family.
+  So the new palette is grounded in the club's own intro branding, not invented.
+- **Button treatment mirrors the reference exactly**: gold background with dark
+  text, transitioning to red with white text on hover/focus. Chose this over
+  red-filled buttons because it (a) matches what voorjaarsintro actually does
+  and (b) puts both hues prominently on every CTA. Verified contrast: dark
+  brown `#4a2c10` on gold ≈ 8:1, white on red ≈ 4.5:1 — both pass WCAG AA.
+- **Mapping**: `--color-primary` → red `#D73E2A` (headings, links, card dates,
+  secondary-button outline, primary-button hover); new `--color-gold`
+  `#E8B950` (primary button fill, header top stripe); `--color-deep` `#7A2417`
+  (footer, replacing the old navy); warm cream page background `#fffaf0` with
+  white card/header/modal surfaces; warm border `#ecdcb8`. Darkened the warm
+  muted/secondary text tokens to hold ≥4.5:1 on the cream background. Replaced
+  the two hardcoded navy `rgba()` values (hero flyer shadow, modal backdrop)
+  with warm equivalents, and dropped the now-unused green `--color-accent`.
+- **Kept the blue club logo** as-is: it's the real Loefbijter mark, and the
+  flyer itself places the same blue-sails logo on the warm background, so the
+  combination is on-brand rather than a clash.

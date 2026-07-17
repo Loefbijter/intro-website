@@ -7,18 +7,24 @@
 @import "@fontsource/roboto-slab/700.css";
 
 :root {
-  /* Brand palette, extracted from loefbijter.nl's Elementor kit + intro page CSS. */
-  --color-primary: #358ec3;       /* buttons, headings */
-  --color-primary-hover: #1bb1e6; /* button hover/focus */
-  --color-navy: #234193;          /* deep accent, header/footer backgrounds */
-  --color-accent: #61ce70;        /* green accent (nav active state) */
-  --color-text: #333333;
-  --color-text-muted: #7a7a7a;
-  --color-text-secondary: #54595f;
-  --color-background: #ffffff;
-  --color-background-alt: #f4f8fb;
-  --color-border: #e0e6eb;
-  --color-danger: #c0392b;
+  /* Brand palette — Introweek theme: warm yellow + red hues. Grounded in
+     loefbijter.nl/voorjaarsintro's warm overrides (gold #E8B950 buttons,
+     red #D73E2A headings + button hover) and the Introweek 2026 flyer
+     (dominant gold/cream, teal accents). */
+  --color-primary: #d73e2a;        /* red — headings, links, dates, button hover */
+  --color-primary-hover: #b5301f;  /* deeper red — pressed state */
+  --color-gold: #e8b950;           /* gold/yellow — primary button background */
+  --color-gold-hover: #dcab34;     /* deeper gold */
+  --color-on-gold: #4a2c10;        /* dark brown text on gold (high contrast) */
+  --color-deep: #7a2417;           /* deep warm red-brown — footer background */
+  --color-text: #2f2a26;           /* warm near-black body text */
+  --color-text-muted: #736656;     /* warm muted (>=4.5:1 on cream) */
+  --color-text-secondary: #5a4a3b; /* warm secondary */
+  --color-background: #ffffff;      /* surfaces: cards, header, modal */
+  --color-page: #fffaf0;           /* warm cream page background */
+  --color-background-alt: #fff6e0;  /* warm cream section tint */
+  --color-border: #ecdcb8;          /* warm border */
+  --color-danger: #b3261e;          /* form errors */
 
   --font-body: "Roboto", system-ui, sans-serif;
   --font-heading: "Roboto Slab", "Roboto", system-ui, serif;
@@ -48,7 +54,7 @@ body {
   margin: 0;
   font-family: var(--font-body);
   color: var(--color-text);
-  background: var(--color-background);
+  background: var(--color-page);
   line-height: 1.6;
 }
 
@@ -74,23 +80,25 @@ img {
   padding: 0 var(--space-2);
 }
 
+/* Primary action: gold background with dark text, red on hover/focus —
+   mirrors the voorjaarsintro reference's button treatment. */
 .button {
   display: inline-block;
-  background: var(--color-primary);
-  color: #fff;
+  background: var(--color-gold);
+  color: var(--color-on-gold);
   font-family: var(--font-body);
-  font-weight: 500;
+  font-weight: 700;
   text-decoration: none;
   padding: 0.75rem 1.5rem;
   border: none;
   border-radius: var(--radius-sm);
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .button:hover,
 .button:focus {
-  background: var(--color-primary-hover);
+  background: var(--color-primary);
   color: #fff;
 }
 
@@ -98,6 +106,7 @@ img {
   background: transparent;
   color: var(--color-primary);
   border: 2px solid var(--color-primary);
+  font-weight: 500;
 }
 
 .button--secondary:hover,
