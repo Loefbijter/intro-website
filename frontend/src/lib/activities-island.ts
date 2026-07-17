@@ -118,7 +118,10 @@ async function loadActivities() {
       return;
     }
 
-    container.innerHTML = activities.map(renderCard).join("");
+    // Dated activities keep their API order; to-be-announced ones (no date)
+    // sort to the bottom. Array.sort is stable, so relative order is preserved.
+    const ordered = [...activities].sort((a, b) => Number(!a.date) - Number(!b.date));
+    container.innerHTML = ordered.map(renderCard).join("");
   } catch (err) {
     container.innerHTML = `<p class="programma__error">Kon activiteiten niet laden. Probeer de pagina te verversen.</p>`;
   }
