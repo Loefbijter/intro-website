@@ -1,6 +1,5 @@
 ---
 title: "Introductieperiode 2026"
-flyerAlt: "Programma Introweek 2026 van NSZV De Loefbijter"
 eetactieUrl: "https://docs.google.com/forms/d/e/1FAIpQLSfPZGLi7WCfklJcS3Ccxc3kcAvFl6p6HxrLoxa1DQvvT4-6oQ/viewform"
 eetactieText: "Meld je aan voor de Eetactie"
 ---

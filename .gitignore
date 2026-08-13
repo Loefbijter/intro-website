@@ -15,3 +15,7 @@ frontend/.astro/
 
 # OS
 .DS_Store
+
+# Others
+.devcontainer/
+.claude/

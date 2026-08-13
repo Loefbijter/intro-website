@@ -1,0 +1,77 @@
+---
+import introweekFlyer from "../assets/flyer-programma-introweek-2026.jpeg";
+import naIntroFlyer from "../assets/flyer-programma-na-intro-2026.jpeg";
+
+const flyers = [
+  {
+    src: introweekFlyer,
+    alt: "Programma Introweek 2026 van NSZV De Loefbijter",
+    caption: "Introweek",
+  },
+  {
+    src: naIntroFlyer,
+    alt: "Programma Najaarsintro 2026 van NSZV De Loefbijter",
+    caption: "Najaarsintro",
+  },
+];
+---
+
+<section class="flyers container">
+  <div class="flyers__grid">
+    {
+      flyers.map((flyer) => (
+        <figure class="flyers__item">
+          <a href={flyer.src.src} target="_blank" rel="noopener noreferrer">
+            <img src={flyer.src.src} alt={flyer.alt} width="1024" height="1280" loading="lazy" />
+          </a>
+          <figcaption>{flyer.caption}</figcaption>
+        </figure>
+      ))
+    }
+  </div>
+  <p class="flyers__hint">Tik op een flyer om de volledige versie te bekijken.</p>
+</section>
+
+<style>
+  .flyers {
+    padding-block: var(--space-4);
+  }
+
+  .flyers__grid {
+    display: grid;
+    gap: var(--space-3);
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .flyers__item {
+    margin: 0;
+  }
+
+  .flyers__item img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius-md);
+    box-shadow: 0 8px 24px rgba(122, 36, 23, 0.18);
+  }
+
+  .flyers__item figcaption {
+    margin-top: var(--space-1);
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    text-align: center;
+  }
+
+  .flyers__hint {
+    margin: var(--space-2) 0 0;
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    text-align: center;
+  }
+
+  @media (max-width: 480px) {
+    .flyers__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
