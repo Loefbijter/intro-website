@@ -1,6 +1,6 @@
 ---
 title: "WoensdagAvondZeilen"
-linkUrl: "https://loefbijter.nl/aanmelden-woensdagavondzeilen"
+linkUrl: "https://docs.google.com/forms/d/e/1FAIpQLSdaV1fhxd1dsdNL3C6irDqV2FrS5sHAwSlMNtN2jFlxWrsm5A/viewform"
 linkText: "Aanmelden"
 ---
 
